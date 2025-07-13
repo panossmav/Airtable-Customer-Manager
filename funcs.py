@@ -28,6 +28,7 @@ def check_user_pass(u, p):
     if usern:
         password = usern[0]["fields"].get("Password")
         if password == p_e:
+            create_user_logs(u,'Logged in.')
             return True  # Auth success
         else:
             return False  # Wrong password
@@ -37,6 +38,42 @@ def check_user_pass(u, p):
 
 
 def create_user_logs(u,act):
-    logs_table.create({"User":u,"Action":act,"Date / Time":gr_time.isoformat(sep=' ', timespec='seconds')})
+    logs_table.create(
+        {"User":u,
+        "Action":act,
+        "Date / Time":gr_time.isoformat(sep=' ', timespec='seconds')})
+
+
+def new_order(p,sku,u):
+    formula_n = f"{{Phone}} = {p}"
+    check_cust = customers_table.all(formula=formula_n,fields=["Name"])
+    if check_cust:
+        name = check_cust[0]["fields"].get("Name")
+    else:
+        name = None
+
+    formula_t = f"{{SKU}} = {sku}"
+    check_prod = products_table.all(formula=formula_t, fields=["Title"])
+    if check_prod:
+        title = check_prod[0]["fields"].get("Title")
+    else:
+        title = None
+    
+
+    if name:
+        if title:
+            orders_table.create({
+                "Customer":name,
+                "Status":"Fulfilled",
+                "Item":title,
+                "Customer Phone":p,
+                "Date / Time":gr_time.isoformat(sep=' ', timespec='seconds')
+            })
+            create_user_logs(u,"Created order (Phone: %d )"%p)
+            return "Η παραγγελία καταχωρήθηκε"
+        else:
+            return "Σφάλμα! Το προϊόν δεν υπάρχει!"
+    else:
+        return "Σφάλμα! το όνομα δεν υπάρχει!"
 
 

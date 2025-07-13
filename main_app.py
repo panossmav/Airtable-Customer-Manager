@@ -18,9 +18,31 @@ def clear_app():
     for widget in app.winfo_children():
         widget.pack_forget()
 
+
+
+def create_order():
+    clear_app()
+    tk.Label(app,text='Κινητό πελάτη: ').pack()
+    phone_e = Entry(app)
+    phone_e.pack()
+    tk.Label(app,text='Κωδικός προϊόντος: ').pack()
+    sku_e = Entry(app)
+    sku_e.pack()
+    def sbt_order_create():
+        phone = int(phone_e.get())
+        sku = int(sku_e.get())
+        creation = new_order(phone,sku,username)
+        fin_var = tk.StringVar(value=creation)
+        tk.Label(app,textvariable=fin_var).pack()
+    tk.Button(app,text='Καταχώρηση παραγγελίας',command=sbt_order_create).pack()
+    tk.Button(app,text='Πίσω -->',command=home).pack()
+
+
 def home():
     clear_app()
     tk.Label(app,text='Καλωσορίσες %s. \n Επίλεξε μια ενέργεια'%username).pack()
+    tk.Button(app,text='Νέα παραγγελία',command=create_order).pack()
+
 
 def login_click():
     global username
@@ -28,7 +50,6 @@ def login_click():
     passw = passw_e.get()
     auth = check_user_pass(username,passw)
     if auth == True:
-        create_user_logs(username,'Logged in.')
         clear_app()
         home()
     else:
