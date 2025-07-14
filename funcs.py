@@ -77,3 +77,17 @@ def new_order(p,sku,u):
         return "Σφάλμα! το όνομα δεν υπάρχει!"
 
 
+def new_customer(n,p,e,notes,user):
+    formula = f"{{Phone}} = {p}"
+    check_p_ex=customers_table.all(formula=formula,fields=["Phone"])
+    if check_p_ex:
+        return 'Υπάρχει ήδη πελάτης με αυτό το τηλέφωνο!'
+    else:
+        customers_table.create({
+            "Name":n,
+            "Notes":notes,
+            "Phone":p,
+            "Email":e
+        })
+        create_user_logs(user,"Add customer (Phone: %d)"%p)
+        return 'Ο πελάτης καταχωρήθηκε!'

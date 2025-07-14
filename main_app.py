@@ -37,11 +37,39 @@ def create_order():
     tk.Button(app,text='Καταχώρηση παραγγελίας',command=sbt_order_create).pack()
     tk.Button(app,text='Πίσω -->',command=home).pack()
 
+def create_customer():
+    clear_app()
+    tk.Label(app,text='Ονοματεπώνυμο: ').pack()
+    name_e = Entry(app)
+    name_e.pack()
+    tk.Label(app,text='Τηλέφωνο: ').pack()
+    phone_e = Entry(app)
+    phone_e.pack()
+    tk.Label(app,text='Email:').pack()
+    email_e = Entry(app)
+    email_e.pack()
+    tk.Label(app,text='Δώσε σημειώσεις (Προαιρετικό):').pack()
+    notes_e = Entry(app)
+    notes_e.pack()
+    def sbt_customer_create():
+        name = name_e.get()
+        phone = int(phone_e.get())
+        email = email_e.get()
+        notes = notes_e.get()
+        if not(notes):
+            notes = 'None'
+        res = new_customer(name,phone,email,notes,username)
+        res_var = tk.StringVar(value=res)
+        tk.Label(app,textvariable=res_var).pack()
+    tk.Button(app,text='Καταχώρηση πελάτη',command=sbt_customer_create).pack()
+    tk.Button(app,text='Πίσω -->',command=home).pack()
+
 
 def home():
     clear_app()
     tk.Label(app,text='Καλωσορίσες %s. \n Επίλεξε μια ενέργεια'%username).pack()
     tk.Button(app,text='Νέα παραγγελία',command=create_order).pack()
+    tk.Button(app,text='Καταχώρηση πελάτη',command=create_customer).pack()
 
 
 def login_click():
