@@ -64,13 +64,58 @@ def create_customer():
     tk.Button(app,text='Καταχώρηση πελάτη',command=sbt_customer_create).pack()
     tk.Button(app,text='Πίσω -->',command=home).pack()
 
+def update_customer():
+    clear_app()
+    tk.Label(app,text='Τρέχον τηλέφωνο:').pack()
+    old_phone_e = Entry(app)
+    old_phone_e.pack()
+
+    tk.Label(app,text='Εισάγετε νέα στοιχέια: \n (Αφήστε κενά τα στοιχεία που θέλετε να παραμείνουν ιδια) \n').pack()
+    
+    tk.Label(app,text='Τηλέφωνο: ').pack()
+    new_phone_e = Entry(app)
+    new_phone_e.pack()
+    tk.Label(app,text='Ονόμα: ').pack()
+    new_name_e = Entry(app)
+    new_name_e.pack()
+    tk.Label(app,text='Email: ').pack()
+    new_email_e = Entry(app)
+    new_email_e.pack()
+    tk.Label(app,text='Σημειώσεις: ').pack()
+    new_notes_e = Entry(app)
+    new_notes_e.pack()
+
+    def sbt_udt_cust():
+        old_phone = int(old_phone_e.get())
+        new_phone = new_phone_e.get()
+        new_name = new_name_e.get()
+        new_email = new_email_e.get()
+        new_notes = new_notes_e.get()
+        if not new_phone:
+            new_phone = old_phone
+        else:
+            new_phone = int(new_phone)
+        if not new_name:
+            new_name = c_check_name(old_phone)
+        if not new_email:
+            new_email = c_check_email(old_phone)
+        if not new_notes:
+            new_notes = c_check_notes(old_phone)
+        res = edit_customer(old_phone,new_name,new_phone,new_email,new_notes,username)
+        res_var = tk.StringVar(value=res)
+        tk.Label(app,textvariable=res_var).pack()
+    tk.Button(app,text='Επεξεργασία',command=sbt_udt_cust).pack()
+    tk.Button(app,text='Πίσω -->',command=home).pack()     
+        
+    
+
 
 def home():
     clear_app()
     tk.Label(app,text='Καλωσορίσες %s. \n Επίλεξε μια ενέργεια'%username).pack()
     tk.Button(app,text='Νέα παραγγελία',command=create_order).pack()
     tk.Button(app,text='Καταχώρηση πελάτη',command=create_customer).pack()
-
+    tk.Button(app,text='Επεξεργασία πελάτη',command=update_customer).pack()
 
 def login_click():
     global username

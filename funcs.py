@@ -91,3 +91,48 @@ def new_customer(n,p,e,notes,user):
         })
         create_user_logs(user,"Add customer (Phone: %d)"%p)
         return 'Ο πελάτης καταχωρήθηκε!'
+    
+def edit_customer(o_p,n,n_p,n_e,n_n,u):
+    formula = f"{{Phone}} = {o_p}"
+    customer = customers_table.all(formula=formula)
+    if customer:
+        cust_id = customer[0]["id"]
+        customers_table.update(cust_id,{
+            "Name":n,
+            "Phone":n_p,
+            "Email":n_e,
+            "Notes":n_n
+        })
+        create_user_logs(u,"Edit customer %d"%o_p)
+        return 'Η επεξέργασια πελάτη καταχωρήθηκε'
+    else:
+        return 'Δεν υπάρχει πελάτης με αυτόν τον αριθμό. Δοκίμαστε ξάνα'
+
+
+def c_check_name(p):
+    formula = f"{{Phone}} = {p}"
+    records = customers_table.all(formula=formula)
+    if records:
+        name = records[0]["fields"].get("Name")
+        return name
+    else:
+        return 'ERROR'
+    
+def c_check_email(p):
+    formula = f"{{Phone}} = {p}"
+    records = customers_table.all(formula=formula)
+    if records:
+        email = records[0]["fields"].get("Email")
+        return email
+    else:
+        return 'ERROR'
+    
+
+def c_check_notes(p):
+    formula = f"{{Phone}} = {p}"
+    records = customers_table.all(formula=formula)
+    if records:
+        notes = records[0]["fields"].get("Notes")
+        return notes
+    else:
+        return 'ERROR'
