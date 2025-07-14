@@ -1,13 +1,10 @@
 ## How to start:
 1. Install modules:
 ``` 
-pip install tkinter
-pip install datetime
-pip install pyairtable
-pip install dotenv 
-pip install hashlib
-pip install pytz
+pip install -r requirements.txt
 ```
+⚠ Αυτό το project χρησιμοποιεί ενσωματωμένες βιβλιοθήκες της Python όπως τα tkinter, datetime και hashlib, οι οποίες δεν απαιτούν εγκατάσταση μέσω pip. Βεβαιωθείτε ότι η εγκατάσταση της Python περιλαμβάνει το Tkinter (συνήθως περιλαμβάνεται εξ ορισμού).
+
 
 2. Clone the repository to your machine:
 ``` git
