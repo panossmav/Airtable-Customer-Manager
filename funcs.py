@@ -62,7 +62,7 @@ def new_order(p,sku,u):
 
     if name:
         if title:
-            orders_table.create({
+            new_order=orders_table.create({
                 "Customer":name,
                 "Status":"Fulfilled",
                 "Item":title,
@@ -70,7 +70,8 @@ def new_order(p,sku,u):
                 "Date / Time":gr_time.isoformat(sep=' ', timespec='seconds')
             })
             create_user_logs(u,"Created order (Phone: %d )"%p)
-            return "Η παραγγελία καταχωρήθηκε"
+            order_num = new_order["fields"].get("Order ID")
+            return "Η παραγγελία καταχωρήθηκε. Αριθμός: %d"%order_num
         else:
             return "Σφάλμα! Το προϊόν δεν υπάρχει!"
     else:
@@ -150,3 +151,29 @@ def new_product(t,p,sku,u):
         })
         create_user_logs(u,"Create product %d"%sku)
         return 'Το προϊόν προστέθηκε επιτυχώς!'
+    
+
+def check_orders(id):
+    formula=f"{{Order ID}} = {id}"
+    res = orders_table.all(formula=formula)
+    if res:
+        cust = res[0]["fields"].get("Customer")
+        stat = res[0]["fields"].get("Status")
+        item = res[0]["fields"].get("Item")
+        date = res[0]["fields"].get("Date / Time")
+        return True,f'Αρ. Παραγγελίας: {id} \n Όνομα: {cust} \n Κατάσταση {stat} \n Προϊόν {item} \n Ημερομηνία: {date}'
+    else:
+        return False,'Δεν βρέθηκε η παραγγελία'
+
+def modify_status(id,n,u):
+    formula=f"{{Order ID}} = {id}"
+    res = orders_table.all(formula=formula)
+    if res:  
+        r_id = res[0]["id"]
+        orders_table.update(r_id,{
+            "Status":n
+        })
+        create_user_logs(u,f'Change order {id} status to {n}')
+        return 'Η κατάσταση παραγγελίας άλλαξε'
+    else:
+        return 'Δεν βρέθηκε η παραγγελία'

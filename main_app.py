@@ -133,6 +133,37 @@ def create_product():
     tk.Button(app,text='Πίσω -->',command=home).pack()
 
 
+def modify_order():
+    clear_app()
+    tk.Label(app,text='Αριθμός παραγγελίας: ').pack()
+    id_e = Entry(app)
+    id_e.pack()
+    def find_order():
+        o_id = int(id_e.get())
+        db_search,result = check_orders(o_id)
+        def found():
+            tk.Label(app,text='Νέο Status:').pack()
+            status_e = Entry(app)
+            status_e.pack()
+            def sbt_found():
+                status = status_e.get()
+                res = modify_status(o_id,status,username)
+                res_var = tk.StringVar(value=res)
+                tk.Label(app,textvariable=res_var).pack()
+            tk.Button(app,text='Αλλαγή κατάστασης',command=sbt_found).pack()
+            tk.Button(app,text='Πίσω -->',command=modify_order).pack()
+        if db_search == True:
+            clear_app()
+            result=tk.StringVar(value=result)
+            tk.Label(app,textvariable=result).pack()
+            found()
+        else:
+            result=tk.StringVar(value=result)
+            tk.Label(app,textvariable=result).pack()            
+    tk.Button(app,text='Αναζήτηση παραγγελίας',command=find_order).pack()
+    tk.Button(app,text='Πίσω -->',command=home).pack()
+
+
 
 
 def home():
@@ -142,7 +173,7 @@ def home():
     tk.Button(app,text='Καταχώρηση πελάτη',command=create_customer).pack()
     tk.Button(app,text='Επεξεργασία πελάτη',command=update_customer).pack()
     tk.Button(app,text='Δημιουργία προϊόντος',command=create_product).pack()
-
+    tk.Button(app,text='Επεξεργασία κατάστασης παραγγελίας',command=modify_order).pack()
 
 
 
