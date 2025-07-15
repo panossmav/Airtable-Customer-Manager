@@ -136,3 +136,17 @@ def c_check_notes(p):
         return notes
     else:
         return 'ERROR'
+
+def new_product(t,p,sku,u):
+    formula = f"{{SKU}} = {sku}"
+    prod_check = products_table.all(formula=formula)
+    if prod_check:
+        return 'Υπάρχει ήδη προϊόν με αυτόν τον κωδικό.'
+    else:
+        products_table.create({
+            "Title":t,
+            "Price":p,
+            "SKU":sku
+        })
+        create_user_logs(u,"Create product %d"%sku)
+        return 'Το προϊόν προστέθηκε επιτυχώς!'

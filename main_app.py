@@ -108,6 +108,31 @@ def update_customer():
     tk.Button(app,text='Πίσω -->',command=home).pack()     
         
     
+def create_product():
+    clear_app()
+    tk.Label(app,text='Τίτλος προϊόντος: ').pack()
+    tit_e = Entry(app)
+    tit_e.pack()
+    tk.Label(app,text='Δώσε τιμή').pack()
+    pr_e=Entry(app)
+    pr_e.pack()
+    tk.Label(app,text='SKU').pack()
+    sku_e = Entry(app)
+    sku_e.pack()
+
+    def sbt_prod_create():
+        title = tit_e.get()
+        price = float(pr_e.get())
+        price = round(price,2)
+        sku = int(sku_e.get())
+        res = new_product(title,price,sku,username)
+        res_tk = tk.StringVar(value=res)
+        tk.Label(app,textvariable=res_tk).pack()
+
+    tk.Button(app,text='Δημιουργία προϊόντος',command=sbt_prod_create).pack()
+    tk.Button(app,text='Πίσω -->',command=home).pack()
+
+
 
 
 def home():
@@ -116,6 +141,11 @@ def home():
     tk.Button(app,text='Νέα παραγγελία',command=create_order).pack()
     tk.Button(app,text='Καταχώρηση πελάτη',command=create_customer).pack()
     tk.Button(app,text='Επεξεργασία πελάτη',command=update_customer).pack()
+    tk.Button(app,text='Δημιουργία προϊόντος',command=create_product).pack()
+
+
+
+
 
 def login_click():
     global username
