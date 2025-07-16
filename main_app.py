@@ -116,16 +116,13 @@ def create_product():
     tk.Label(app,text='Δώσε τιμή').pack()
     pr_e=Entry(app)
     pr_e.pack()
-    tk.Label(app,text='SKU').pack()
-    sku_e = Entry(app)
-    sku_e.pack()
+
 
     def sbt_prod_create():
         title = tit_e.get()
         price = float(pr_e.get())
         price = round(price,2)
-        sku = int(sku_e.get())
-        res = new_product(title,price,sku,username)
+        res = new_product(title,price,username)
         res_tk = tk.StringVar(value=res)
         tk.Label(app,textvariable=res_tk).pack()
 
@@ -163,6 +160,53 @@ def modify_order():
     tk.Button(app,text='Αναζήτηση παραγγελίας',command=find_order).pack()
     tk.Button(app,text='Πίσω -->',command=home).pack()
 
+def edit_prod():
+    clear_app()
+    tk.Label(app,text='SKU').pack()
+    sku_e = Entry(app)
+    sku_e.pack()
+    def sbt_ed_pr():
+        sku = int(sku_e.get())
+        def found_prod():
+            clear_app()
+            tk.Label(app,text=f"SKU: {sku} \n Τίτλος: {old_prod_title(sku)} \n Τιμή: {old_prod_price(sku)}").pack()
+            tk.Label(app,text='Εισάγετε αλλαγές \n Αφηστε κενό για διατήρηση')
+            tk.Label(app,text='Νέος τίτλος').pack()
+            n_title_e = Entry(app)
+            n_title_e.pack()
+            tk.Label(app,text='Νέα τιμή').pack()
+            n_p_e = Entry(app)
+            n_p_e.pack()
+            def sbt_found_prod():
+                n_title = n_title_e.get()
+                n_price = n_price.get()
+                if not n_title:
+                    n_title = old_prod_title(sku)
+                if not n_price:
+                    n_price = old_prod_price(sku)
+                else:
+                    n_price = float(n_price)
+                res = modify_product(n_title,n_price,sku,username)
+                res_var = tk.StringVar(value=res)
+                tk.Label(app,textvariable=res_var).pack()
+            tk.Button(app,text='Υποβολή αλλαγής',command=sbt_found_prod).pack()
+            tk.Button(app,text='Πίσω <-',command=edit_prod).pack()
+
+        prod_check = check_product(sku)
+        if prod_check == True:
+            found_prod()
+        else:
+            tk.Label(app,text='Δεν βρέθηκε προϊόν με αυτό το SKU').pack()
+    
+    tk.Button(app,text='Αναζήτση παραγγελίας',command=sbt_ed_pr).pack()
+    tk.Button(app,text='Πίσω -->',command=home).pack()
+
+        
+
+
+
+
+
 
 
 
@@ -174,7 +218,8 @@ def home():
     tk.Button(app,text='Επεξεργασία πελάτη',command=update_customer).pack()
     tk.Button(app,text='Δημιουργία προϊόντος',command=create_product).pack()
     tk.Button(app,text='Επεξεργασία κατάστασης παραγγελίας',command=modify_order).pack()
-
+    tk.Button(app,text='Επεξεργασία προϊόντος',command=edit_prod).pack()
+    
 
 
 

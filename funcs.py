@@ -138,19 +138,14 @@ def c_check_notes(p):
     else:
         return 'ERROR'
 
-def new_product(t,p,sku,u):
-    formula = f"{{SKU}} = {sku}"
-    prod_check = products_table.all(formula=formula)
-    if prod_check:
-        return 'Υπάρχει ήδη προϊόν με αυτόν τον κωδικό.'
-    else:
-        products_table.create({
-            "Title":t,
-            "Price":p,
-            "SKU":sku
+def new_product(t,p,u):
+    new_p=products_table.create({
+        "Title":t,
+        "Price":p,
         })
-        create_user_logs(u,"Create product %d"%sku)
-        return 'Το προϊόν προστέθηκε επιτυχώς!'
+    create_user_logs(u,"Create product.")
+    sku = new_p["fields"].get("SKU")
+    return f"Το προϊόν προστέθηκε επιτυχώς! SKU: {sku}"
     
 
 def check_orders(id):
@@ -177,3 +172,37 @@ def modify_status(id,n,u):
         return 'Η κατάσταση παραγγελίας άλλαξε'
     else:
         return 'Δεν βρέθηκε η παραγγελία'
+
+def modify_product(n_t,n_p,sku,u):
+    formula = f"{{SKU}} = {sku}"
+    find_prod = products_table.all(formula=formula)
+    if find_prod:
+        p_id = find_prod[0]["id"]
+        products_table.update(p_id,{
+            "Title":n_t,
+            "Price":n_p
+        })
+        create_user_logs(u,f"Edit product {sku}")
+        return f'Το προϊόν {sku} επεξεργάστηκε.'
+    else:
+        return f'Δεν βρέθηκε προϊόν με αυτόν τον κωδικό.'
+
+def check_product(sku):
+    formula = f"{{SKU}} = {sku}"
+    res = products_table.all(formula=formula)
+    if res:
+        return True
+    else:
+        return False
+    
+def old_prod_title(sku):
+    formula=f"{{SKU}} ={sku}"
+    titles = products_table.all(formula=formula)
+    title=titles[0]["fields"].get("Title")
+    return title
+
+def old_prod_price(sku):
+    formula=f"{{SKU}} ={sku}"
+    prices = products_table.all(formula=formula)
+    price=prices[0]["fields"].get("Price")
+    return price
