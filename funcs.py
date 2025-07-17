@@ -25,15 +25,21 @@ def check_user_pass(u, p):
     p_e = hashlib.sha256(p.encode()).hexdigest()
     formula = f"{{Username}} = '{u}'"
     usern = users_table.all(formula=formula, fields=["Password"])
+    acc_type = users_table.all(formula=formula)
+    us_type = acc_type[0]["fields"].get("User Type")
+
     if usern:
         password = usern[0]["fields"].get("Password")
         if password == p_e:
             create_user_logs(u,'Logged in.')
-            return True  # Auth success
+            if us_type == 'admin':
+                return True,True  # Auth success and user is an admin
+            else:
+                return True,False #Auth success and user is NOT an admin
         else:
-            return False  # Wrong password
+            return False,False  # Wrong password
     else:
-        return False  # No such user
+        return False,False  # No such user
     
 
 
@@ -206,3 +212,19 @@ def old_prod_price(sku):
     prices = products_table.all(formula=formula)
     price=prices[0]["fields"].get("Price")
     return price
+
+
+def new_user(o_u,n_u,pwd,u_t):
+    formula = f"{{Username}} = '{n_u}'"
+    us_check = users_table.all(formula=formula)
+    if us_check:
+        return 'Υπάρχει ήδη χρήστης με αυτό το όνομα'
+    else:
+        users_table.create({
+            "Username":n_u,
+            "Password":hashlib.sha256(pwd.encode()).hexdigest(),
+            "User Type":u_t
+        })
+        create_user_logs(o_u,f"Create {n_u} as {u_t}")
+        return 'Ο χρήσητης αποθηκεύτηκε και μπορεί να συνδεθεί'
+    

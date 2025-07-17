@@ -1,6 +1,7 @@
 from tkinter import *
 import tkinter as tk
 from funcs import *
+from tkinter import ttk
 
 app=tk.Tk()
 app.geometry('500x500')
@@ -204,8 +205,38 @@ def edit_prod():
         
 
 
-
-
+def create_user():
+    clear_app()
+    tk.Label(app,text='Νεο username').pack()
+    n_user_e = Entry(app)
+    n_user_e.pack()
+    tk.Label(app,text='Κωδικός πρόσβασης').pack()
+    pwd_e1 = Entry(app,show='•')
+    pwd_e1.pack()
+    tk.Label(app,text='Επανάληψη κωδικού πρόσβασης').pack()
+    pwd_e2 = Entry(app,show='•')
+    pwd_e2.pack()
+    tk.Label(app,text='Τύπος χρήστη').pack()
+    u_type_c = ttk.Combobox(app,values=["Διαχειριστής","Απλός Χρήστης"])
+    u_type_c.pack()
+    def sbt_create_user():
+        n_user = n_user_e.get()
+        pwd_1 = pwd_e1.get()
+        pwd_2 = pwd_e2.get()
+        u_type = u_type_c.get()
+        if pwd_1 == pwd_2:
+            pwd = pwd_1
+            if u_type == "Διαχειριστής":
+                u_type = "admin"
+            else:
+                u_type = "user"
+            res = new_user(username,n_user,pwd,u_type)
+            res = tk.StringVar(value=res)
+            tk.Label(app,textvariable=res).pack()
+        else:
+            tk.Label(app,text='Ο κωδικός και η επιβεβαίωση διαφέρουν. Δοκιμάστε ξανά.').pack()
+    tk.Button(app,text='Προσθήκη χρήστη',command=sbt_create_user).pack()
+    tk.Button(app,text='Πίσω -->',command=home).pack()
 
 
 
@@ -213,6 +244,8 @@ def edit_prod():
 def home():
     clear_app()
     tk.Label(app,text='Καλωσορίσες %s. \n Επίλεξε μια ενέργεια'%username).pack()
+    if isadmin == True:
+        tk.Button(app,text='Προσθήκη χρήστη',command=create_user).pack()
     tk.Button(app,text='Νέα παραγγελία',command=create_order).pack()
     tk.Button(app,text='Καταχώρηση πελάτη',command=create_customer).pack()
     tk.Button(app,text='Επεξεργασία πελάτη',command=update_customer).pack()
@@ -225,9 +258,10 @@ def home():
 
 def login_click():
     global username
+    global isadmin
     username = username_e.get()
     passw = passw_e.get()
-    auth = check_user_pass(username,passw)
+    auth,isadmin = check_user_pass(username,passw)
     if auth == True:
         clear_app()
         home()
