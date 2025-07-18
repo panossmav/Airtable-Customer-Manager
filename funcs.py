@@ -228,3 +228,15 @@ def new_user(o_u,n_u,pwd,u_t):
         create_user_logs(o_u,f"Create {n_u} as {u_t}")
         return 'Ο χρήσητης αποθηκεύτηκε και μπορεί να συνδεθεί'
     
+def del_user(c_u,d_u):
+    formula = f"{{Username}} = '{d_u}'"
+    res = users_table.all(formula=formula)
+    if res:
+        user = res[0]["id"]
+        users_table.delete(user)
+        create_user_logs(c_u,f"Delete user: {d_u}")
+        return 'Ο χρήστης διαγράφηκε!'
+    else:
+        return 'Δεν βρέθηκε χρήστης με αυτό το όνομα!'
+
+    

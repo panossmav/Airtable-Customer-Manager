@@ -239,20 +239,37 @@ def create_user():
     tk.Button(app,text='Πίσω -->',command=home).pack()
 
 
+def delete_user():
+    clear_app()
+    tk.Label(app,text='Όνομα χρήστη που επιθυμείτε να διαγράψετε').pack()
+    d_u_e = Entry(app)
+    d_u_e.pack()
+    def sbt_del():
+        d_u = d_u_e.get()
+        res = del_user(username,d_u)
+        res_var = tk.StringVar(res)
+        tk.Label(app,textvariable=res_var).pack()
+    tk.Button(app,text='Διαγραφή').pack()
+    tk.Button(app,text='Πίσω -->',command=home).pack()
+
+
+
 
 
 def home():
     clear_app()
     tk.Label(app,text='Καλωσορίσες %s. \n Επίλεξε μια ενέργεια'%username).pack()
-    if isadmin == True:
-        tk.Button(app,text='Προσθήκη χρήστη',command=create_user).pack()
     tk.Button(app,text='Νέα παραγγελία',command=create_order).pack()
     tk.Button(app,text='Καταχώρηση πελάτη',command=create_customer).pack()
     tk.Button(app,text='Επεξεργασία πελάτη',command=update_customer).pack()
     tk.Button(app,text='Δημιουργία προϊόντος',command=create_product).pack()
     tk.Button(app,text='Επεξεργασία κατάστασης παραγγελίας',command=modify_order).pack()
     tk.Button(app,text='Επεξεργασία προϊόντος',command=edit_prod).pack()
-    
+    if isadmin == True:
+        tk.Label(app,text='Λειτουργίες διαχειριστή:').pack()
+        tk.Button(app,text='Προσθήκη χρήστη εφαρμογής',command=create_user).pack()
+        tk.Button(app,text='Διαγραφή χρήστη εφαρμογής',command=delete_user).pack()
+
 
 
 
