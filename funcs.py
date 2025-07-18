@@ -62,12 +62,21 @@ def new_order(p,sku,u):
     check_prod = products_table.all(formula=formula_t, fields=["Title"])
     if check_prod:
         title = check_prod[0]["fields"].get("Title")
+        prod_id = check_prod[0]["id"]
+        inv = check_prod[0]["fields"].get("Inventory")
+
     else:
         title = None
     
 
     if name:
         if title:
+            if inv>0:
+                customers_table.update(prod_id,{"Inventory":inv-1})
+                if inv == 1:
+                    nostock = True
+                else:
+                    nostock = False
             new_order=orders_table.create({
                 "Customer":name,
                 "Status":"Fulfilled",
@@ -81,7 +90,7 @@ def new_order(p,sku,u):
         else:
             return "Σφάλμα! Το προϊόν δεν υπάρχει!"
     else:
-        return "Σφάλμα! το όνομα δεν υπάρχει!"
+        return "Σφάλμα! το όνομα δεν υπάρχει!",nostock
 
 
 def new_customer(n,p,e,notes,user):
@@ -144,10 +153,11 @@ def c_check_notes(p):
     else:
         return 'ERROR'
 
-def new_product(t,p,u):
+def new_product(t,p,u,s):
     new_p=products_table.create({
         "Title":t,
         "Price":p,
+        "Inventory":s
         })
     create_user_logs(u,"Create product.")
     sku = new_p["fields"].get("SKU")
@@ -250,3 +260,18 @@ def del_cust(u,p):
     else:
         return 'Ο πελάτης δεν βρέθηκε'
     
+def update_inv(u,sku,n_inv):
+    formula = f"{{SKU}} = {sku}"
+    check_prod = products_table.all(formula=formula)
+    if check_prod:
+        curr_inv = int(check_prod[0]["fields"].get("Inventory"))
+        t_inv = curr_inv + n_inv
+        rec_id = check_prod[0]["id"]
+        products_table.update(rec_id,{"Inventory":t_inv})
+        create_user_logs(u,f"Set {sku} inventory to {t_inv}")
+        return f"Νέο απόθεμα: %d"%t_inv
+    else:
+        return 'Δεν βρέθηκε προϊόν με αυτόν τον κωδικό'
+
+
+

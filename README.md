@@ -20,6 +20,7 @@ git clone https://github.com/panossmav/Airtable-Customer-Manager.git
 		1. `Title`: Single line text 
 		2. `Price`: Number (float, 2 decimal)
 		3. `SKU`: Autonumber
+		4. `Inventory`:Number(integer)
 	3. `Orders` with fields:
 		1. `Customer`: Single line text
 		2. `Status`: Single line text

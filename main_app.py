@@ -30,11 +30,14 @@ def create_order():
     sku_e = Entry(app)
     sku_e.pack()
     def sbt_order_create():
+        global nostock
         phone = int(phone_e.get())
         sku = int(sku_e.get())
-        creation = new_order(phone,sku,username)
+        creation,nostock = new_order(phone,sku,username)
         fin_var = tk.StringVar(value=creation)
         tk.Label(app,textvariable=fin_var).pack()
+        if nostock == True:
+            tk.Label(app,text='Προσοχή! το απόθεμα τελείωσε.').pack()
     tk.Button(app,text='Καταχώρηση παραγγελίας',command=sbt_order_create).pack()
     tk.Button(app,text='Πίσω -->',command=home).pack()
 
@@ -117,13 +120,16 @@ def create_product():
     tk.Label(app,text='Δώσε τιμή').pack()
     pr_e=Entry(app)
     pr_e.pack()
-
+    tk.Label(app,text='Απόθεμα (0 για μη παρακολούθηση)').pack()
+    st_e = Entry(app)
+    st_e.pack()
 
     def sbt_prod_create():
         title = tit_e.get()
         price = float(pr_e.get())
         price = round(price,2)
-        res = new_product(title,price,username)
+        stock = int(st_e.get())
+        res = new_product(title,price,username,stock)
         res_tk = tk.StringVar(value=res)
         tk.Label(app,textvariable=res_tk).pack()
 
@@ -266,7 +272,21 @@ def delete_customer():
     tk.Button(app,text='Πίσω -->',command=home).pack()
 
 
-
+def add_inv():
+    tk.Label(app,text='SKU').pack()
+    sku_e = Entry(app)
+    sku_e.pack()
+    tk.Label(app,text='Αριθμός νέων παραλαβών').pack()
+    n_inve = Entry(app)
+    n_inve.pack()
+    def sbt_add_inv():
+        sku = int(sku_e.get())
+        n_inv = int(n_inve.get())
+        res = update_inv(username,sku,n_inv)
+        res_var = tk.StringVar(value=res)
+        tk.Label(app,textvariable=res_var).pack()
+    tk.Button(app,text='Επεξεργασία',command=sbt_add_inv).pack()
+    tk.Button(app,text='Πίσω -->',command=home).pack()    
 
 def home():
     clear_app()
@@ -277,6 +297,7 @@ def home():
     tk.Button(app,text='Δημιουργία προϊόντος',command=create_product).pack()
     tk.Button(app,text='Επεξεργασία κατάστασης παραγγελίας',command=modify_order).pack()
     tk.Button(app,text='Επεξεργασία προϊόντος',command=edit_prod).pack()
+    tk.Button(app,text='Επεξεργασία αποθέματος προϊόντων',command=add_inv).pack()
     if isadmin == True:
         tk.Label(app,text='Λειτουργίες διαχειριστή:').pack()
         tk.Button(app,text='Προσθήκη χρήστη εφαρμογής',command=create_user).pack()
