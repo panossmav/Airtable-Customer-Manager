@@ -239,4 +239,14 @@ def del_user(c_u,d_u):
     else:
         return 'Δεν βρέθηκε χρήστης με αυτό το όνομα!'
 
+def del_cust(u,p):
+    formula =f"{{Phone}} = {p}"
+    res = customers_table.all(formula=formula)
+    if res:
+        cust_airt_id = res[0]["id"]
+        customers_table.delete(cust_airt_id)
+        create_user_logs(u,f"Delete customer {p}")
+        return 'Ο πελάτης διαγράφηκε'
+    else:
+        return 'Ο πελάτης δεν βρέθηκε'
     

@@ -247,11 +247,23 @@ def delete_user():
     def sbt_del():
         d_u = d_u_e.get()
         res = del_user(username,d_u)
-        res_var = tk.StringVar(res)
+        res_var = tk.StringVar(value=res)
         tk.Label(app,textvariable=res_var).pack()
-    tk.Button(app,text='Διαγραφή').pack()
+    tk.Button(app,text='Διαγραφή',command=sbt_del).pack()
     tk.Button(app,text='Πίσω -->',command=home).pack()
 
+
+def delete_customer():
+    tk.Label(app,text='Τηλέφωνο πελάτη').pack()
+    p_e = Entry(app)
+    p_e.pack()
+    def sbt_del_c():
+        p = p_e.get()
+        res = del_cust(username,p)
+        res_var=tk.StringVar(value=res)
+        tk.Label(app,textvariable=res_var).pack()
+    tk.Button(app,text='Διαγραφή',command=sbt_del_c).pack()
+    tk.Button(app,text='Πίσω -->',command=home).pack()
 
 
 
@@ -269,7 +281,7 @@ def home():
         tk.Label(app,text='Λειτουργίες διαχειριστή:').pack()
         tk.Button(app,text='Προσθήκη χρήστη εφαρμογής',command=create_user).pack()
         tk.Button(app,text='Διαγραφή χρήστη εφαρμογής',command=delete_user).pack()
-
+        tk.Button(app,text='Διαγραφή πελάτη',command=delete_customer).pack()
 
 
 
