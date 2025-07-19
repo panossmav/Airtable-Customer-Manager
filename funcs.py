@@ -59,11 +59,11 @@ def new_order(p,sku,u):
         name = None
 
     formula_t = f"{{SKU}} = {sku}"
-    check_prod = products_table.all(formula=formula_t, fields=["Title"])
+    check_prod = products_table.all(formula=formula_t)
     if check_prod:
         title = check_prod[0]["fields"].get("Title")
         prod_id = check_prod[0]["id"]
-        inv = check_prod[0]["fields"].get("Inventory")
+        inv = int(check_prod[0]["fields"].get("Inventory"))
 
     else:
         title = None
@@ -71,6 +71,7 @@ def new_order(p,sku,u):
 
     if name:
         if title:
+            nostock = False
             if inv>0:
                 customers_table.update(prod_id,{"Inventory":inv-1})
                 if inv == 1:
@@ -82,13 +83,13 @@ def new_order(p,sku,u):
                 "Status":"Fulfilled",
                 "Item":title,
                 "Customer Phone":p,
-                "Date / Time":gr_time.isoformat(sep=' ', timespec='seconds')
+                "Date / Time":gr_time.isoformat()
             })
             create_user_logs(u,"Created order (Phone: %d )"%p)
             order_num = new_order["fields"].get("Order ID")
-            return "Η παραγγελία καταχωρήθηκε. Αριθμός: %d"%order_num
+            return "Η παραγγελία καταχωρήθηκε. Αριθμός: %d"%order_num,nostock
         else:
-            return "Σφάλμα! Το προϊόν δεν υπάρχει!"
+            return "Σφάλμα! Το προϊόν δεν υπάρχει!",nostock
     else:
         return "Σφάλμα! το όνομα δεν υπάρχει!",nostock
 
@@ -274,4 +275,20 @@ def update_inv(u,sku,n_inv):
         return 'Δεν βρέθηκε προϊόν με αυτόν τον κωδικό'
 
 
+def net_pr_cust(p,u):
+    formula = f"{{Customer Phone}} = {p}"
+    find_c = orders_table.all(formula=formula,fields=["Product SKU"])
+    if find_c:
+        t_p = 0.0
+        for record in find_c:
+            item = int(record["fields"].get("Product SKU"))
+            formula_i = f"{{SKU}} = {item}"
+            find = products_table.all(formula=formula_i,fields=["Price"])
+            price = float(find[0]["fields"].get("Price"))
+            price = round(price,2)
+            t_p+=price
+            create_user_logs(u,f"Net profit view of customer: {p}")
+        return f"Τζίρος πελάτη: {t_p} €."
+    else:
+        return 'Δεν βρέθηκε πελάτης'
 

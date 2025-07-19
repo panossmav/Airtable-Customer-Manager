@@ -2,6 +2,8 @@ from tkinter import *
 import tkinter as tk
 from funcs import *
 from tkinter import ttk
+from tkcalendar import DateEntry
+
 
 app=tk.Tk()
 app.geometry('500x500')
@@ -273,6 +275,7 @@ def delete_customer():
 
 
 def add_inv():
+    clear_app()
     tk.Label(app,text='SKU').pack()
     sku_e = Entry(app)
     sku_e.pack()
@@ -287,6 +290,23 @@ def add_inv():
         tk.Label(app,textvariable=res_var).pack()
     tk.Button(app,text='Επεξεργασία',command=sbt_add_inv).pack()
     tk.Button(app,text='Πίσω -->',command=home).pack()    
+
+
+def net_profit_customer():
+    clear_app()
+    tk.Label(app,text='Τηλέφωνο').pack()
+    p_e = Entry(app)
+    p_e.pack()
+    def sbt_n_p_c():
+        p = int(p_e.get())
+        res = net_pr_cust(p,username)
+        res_tk = tk.StringVar(value=res)
+        tk.Label(app,textvariable=res_tk).pack()
+    tk.Button(app,text='Προβολή',command=sbt_n_p_c).pack()
+    tk.Button(app,text='Πίσω -->',command=home).pack()  
+
+
+
 
 def home():
     clear_app()
@@ -303,7 +323,7 @@ def home():
         tk.Button(app,text='Προσθήκη χρήστη εφαρμογής',command=create_user).pack()
         tk.Button(app,text='Διαγραφή χρήστη εφαρμογής',command=delete_user).pack()
         tk.Button(app,text='Διαγραφή πελάτη',command=delete_customer).pack()
-
+        tk.Button(app,text='Προβολή τζίρου ανα πελάτη',command=net_profit_customer).pack()
 
 
 def login_click():
