@@ -34,7 +34,7 @@ git clone https://github.com/panossmav/Airtable-Customer-Manager.git
 		2. `Password`: Single line text
 		3. `User Type`: Single line text
 		4. `User ID`: Autonumber
-		**Note: you must save a user in the `App users` table, by encrypting the password with SHA256,and setting it as admin (case sensitive) ([Encrypt here](https://emn178.github.io/online-tools/sha256.html))**
+		**Note: you must save a user in the `App users` table, by encrypting the password with SHA256,and setting it as `admin` (case sensitive) ([Encrypt here](https://emn178.github.io/online-tools/sha256.html))**
 	5. `User logs:` with fields:
 		1. `User`: Single line text
 		2. `Action`: Single line text
