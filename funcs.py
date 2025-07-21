@@ -292,3 +292,24 @@ def net_pr_cust(p,u):
     else:
         return 'Δεν βρέθηκε πελάτης'
 
+def total_cust():
+    all_cust=customers_table.all()
+    count = len(all_cust)
+    return count
+
+def total_net():
+    check_orders=orders_table.all(fields=["Product SKU"])
+    total_net=0.0
+    for order in check_orders:
+        item = order["fields"].get("Product SKU")
+        formula=f"{{SKU}} = {item}"
+        if not formula:
+            break
+        products = products_table.all(formula=formula,fields=["Price"])
+        product = float(products[0]["fields"].get("Price"))
+        if not product:
+            break
+        total_net+=product
+    return round(total_net,2)
+
+
