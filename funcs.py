@@ -49,6 +49,8 @@ def create_user_logs(u,act):
         "Action":act,
         "Date / Time":gr_time.isoformat(sep=' ', timespec='seconds')})
 
+def now():
+    return gr_time.isoformat(sep=' ', timespec='seconds')
 
 def new_order(p,sku,u):
     formula_n = f"{{Phone}} = {p}"
