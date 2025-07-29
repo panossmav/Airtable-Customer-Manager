@@ -37,32 +37,85 @@ def log_in():
     tk.Button(root,text='Σύνδεση',command=auth).pack()
     
 
-def new_order():
-    clear_root()
-    tk.Label(root,text='Καταχώρηση νέας παραγγελίας',font=('Arial',14)).grid(row=0,sticky="w")
-    tk.Label(root,text='Προϊόντα').grid(row=1,sticky="e")
-    add_items = True
-    product_entries = []
-    product_codes = []
-    i = 0
-    while add_items == True:
-        if add_btn and stop_btn:
-            add_btn.pack_forget()
-            stop_btn.pack_forget()
+def create_order():
+    new_window = Toplevel(root)
+    new_window.title("Νέα Παραγγελία")
 
-        product_entries[i]=Entry(root)
-        product_entries[i].grid(row=i+2,sticky="e")
-        product_codes[i] = product_entries[i].get()
-        if product_entries[i-1]:
-            product_entries[i-1].config(state="disabled")
-        def add_product_btn():
-            add_items = True
-        add_btn=tk.Button(root,text='Προσθήκη Προϊόντος',command=add_product_btn)
-        add_btn.grid(row=i+3,column=0)
-        def stop_add():
-            add_items = False
-        stop_btn = tk.Button(root,text='Τέλος προσθήκης προϊόντων',command=stop_add)
-        stop_btn.grid(row=i+3,column=1)
+    tk.Label(new_window, text='Αριθμός τηλεφώνου πελάτη:').grid(row=0, column=0, sticky='e')
+    phone_e = Entry(new_window)
+    phone_e.grid(row=0, column=1, sticky='w')
+
+    def sbt_find_cust():
+        phone = phone_e.get()
+        if not phone:
+            pu.showerror('CRMLite Online', 'Παρακαλώ εισάγετε έναν αριθμό τηλεφώνου!')
+            return
+
+        try:
+            phone_int = int(phone)
+        except ValueError:
+            pu.showerror('CRMLite Online', 'Μη έγκυρος αριθμός τηλεφώνου!')
+            return
+
+        if check_phone(phone_int):
+            for widget in new_window.winfo_children():
+                widget.destroy()
+
+            name, phone, email, notes = fetch_customer_info(phone_int)
+            tk.Label(new_window, text=f"Ο πελάτης βρέθηκε!\nΌνομα: {name}\nΤηλέφωνο: {phone}\nEmail: {email}\nΣημειώσεις: {notes}", justify='left').grid(row=0, column=0, columnspan=3, sticky='w', padx=10, pady=10)
+
+            tk.Label(new_window, text="Κωδικός προϊόντος (SKU):").grid(row=1, column=0, sticky='e')
+            sku_entry = Entry(new_window)
+            sku_entry.grid(row=1, column=1, sticky='w')
+
+            product_frame = tk.Frame(new_window)
+            product_frame.grid(row=3, column=0, columnspan=3, sticky='w', padx=10, pady=10)
+
+            total_price_var = tk.DoubleVar(value=0.00)
+            row_counter = [0]  # Μετρητής για εμφάνιση προϊόντων
+
+            def sbt_add_product():
+                sku = sku_entry.get()
+                if not sku:
+                    pu.showerror('CRMLite Online', 'Παρακαλώ δώστε κωδικό προϊόντος!')
+                    return
+                try:
+                    sku_int = int(sku)
+                except ValueError:
+                    pu.showerror('CRMLite Online', 'Ο κωδικός προϊόντος πρέπει να είναι αριθμός!')
+                    return
+
+                if check_product(sku_int):
+                    title, price = fetch_product_info(sku_int)
+                    tk.Label(product_frame, text=f"{title}, {price:.2f}€, Κωδ: {sku_int}").grid(row=row_counter[0], column=0, sticky='w')
+                    total_price_var.set(total_price_var.get() + price)
+                    total_label.config(text=f"Σύνολο: {total_price_var.get():.2f} €")
+                    row_counter[0] += 1
+                    sku_entry.delete(0, 'end')
+                else:
+                    pu.showerror('CRMLite Online', f"Δεν βρέθηκε προϊόν με κωδικό {sku_int}!")
+
+            tk.Button(new_window, text="Προσθήκη", command=sbt_add_product).grid(row=1, column=2, sticky='w')
+
+            total_label = tk.Label(new_window, text="Σύνολο: 0.00 €", font=('Arial', 12, 'bold'))
+            total_label.grid(row=2, column=0, columnspan=3, sticky='w', padx=10, pady=5)
+
+            # Κουμπί Καταχώρηση Παραγγελίας
+            def submit_order():
+                price = total_price_var.get()
+                result, msg = new_order(phone_int, price, username)
+                if result:
+                    pu.showinfo('CRMLite Online', msg)
+                    new_window.destroy()
+                else:
+                    pu.showerror('CRMLite Online', msg)
+
+            tk.Button(new_window, text="Καταχώρηση Παραγγελίας", command=submit_order, bg="green", fg="white").grid(row=4, column=0, columnspan=3, pady=10)
+
+        else:
+            pu.showerror('CRMLite Online', f"Δεν βρέθηκε πελάτης με τον αριθμό {phone}. \nΠροσθέστε πελάτη και δοκιμάστε ξανά.")
+
+    tk.Button(new_window, text='Αναζήτηση πελάτη', command=sbt_find_cust).grid(row=0, column=2, sticky='w')
 
 
 def home():
@@ -73,6 +126,7 @@ def home():
     else:
         tk.Label(root,text='Διαχειριστής. Όλες οι λειτουγίες διαθέσιμες',fg="green").grid(row=1,sticky='w')
     tk.Label(root,text=f"Τελευταία ενημέρωση: {now()}").grid(row=2,sticky="w")
+    tk.Button(root,text='Νέα Παραγγελία',command=create_order).grid(column=3,sticky='e')
 
 
 log_in()

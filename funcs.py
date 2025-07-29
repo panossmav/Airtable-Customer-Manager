@@ -6,7 +6,10 @@ from pyairtable import Api
 import hashlib
 import pytz
 
-gr_time = datetime.now(pytz.timezone("Europe/Athens"))
+global gr_time
+gr_time = gr_time = datetime.now()
+
+
 
 dotenv.load_dotenv()
 
@@ -26,9 +29,10 @@ def check_user_pass(u, p):
     formula = f"{{Username}} = '{u}'"
     usern = users_table.all(formula=formula, fields=["Password"])
     acc_type = users_table.all(formula=formula)
-    us_type = acc_type[0]["fields"].get("User Type")
+    
 
     if usern:
+        us_type = acc_type[0]["fields"].get("User Type")
         password = usern[0]["fields"].get("Password")
         if password == p_e:
             create_user_logs(u,'Logged in.')
@@ -52,48 +56,14 @@ def create_user_logs(u,act):
 def now():
     return gr_time.isoformat(sep=' ', timespec='seconds')
 
-def new_order(p,sku,u):
-    formula_n = f"{{Phone}} = {p}"
-    check_cust = customers_table.all(formula=formula_n,fields=["Name"])
-    if check_cust:
-        name = check_cust[0]["fields"].get("Name")
+def get_prod_price(sku):
+    formula = f"{{SKU}} = {sku}"
+    products=products_table.all(formula=formula)
+    if products:
+        price = products[0]["fields"].get("Price")
+        return price
     else:
-        name = None
-
-    formula_t = f"{{SKU}} = {sku}"
-    check_prod = products_table.all(formula=formula_t)
-    if check_prod:
-        title = check_prod[0]["fields"].get("Title")
-        prod_id = check_prod[0]["id"]
-        inv = int(check_prod[0]["fields"].get("Inventory"))
-
-    else:
-        title = None
-    
-
-    if name:
-        if title:
-            nostock = False
-            if inv>0:
-                customers_table.update(prod_id,{"Inventory":inv-1})
-                if inv == 1:
-                    nostock = True
-                else:
-                    nostock = False
-            new_order=orders_table.create({
-                "Customer":name,
-                "Status":"Fulfilled",
-                "Item":title,
-                "Customer Phone":p,
-                "Date / Time":gr_time.isoformat()
-            })
-            create_user_logs(u,"Created order (Phone: %d )"%p)
-            order_num = new_order["fields"].get("Order ID")
-            return "Η παραγγελία καταχωρήθηκε. Αριθμός: %d"%order_num,nostock
-        else:
-            return "Σφάλμα! Το προϊόν δεν υπάρχει!",nostock
-    else:
-        return "Σφάλμα! το όνομα δεν υπάρχει!",nostock
+        return 0
 
 
 def new_customer(n,p,e,notes,user):
@@ -166,6 +136,25 @@ def new_product(t,p,u,s):
     sku = new_p["fields"].get("SKU")
     return f"Το προϊόν προστέθηκε επιτυχώς! SKU: {sku}"
     
+def new_order(phone,price,u):
+    formula = f"{{Phone}} = {phone}"
+    fetch_name=customers_table.all(formula=formula)
+    if fetch_name:
+        name = fetch_name[0]["fields"].get("Name")
+        order=customers_table.create({
+            "Customer":name,
+            "Status":'Fullfilled',
+            "Total Price":price,
+            "Customer Phone":phone,
+            "Date / Time":gr_time
+        })
+        ord_id = order["fields"].get("Order ID")
+        create_user_logs(u,f"Create order {ord_id}")
+        return True,f"Η παραγγελία {ord_id} καταχωρήθηκε!"
+    else:
+        return False, 'Σφάλμα! Δοκιμάστε ξανά'
+
+
 
 def check_orders(id):
     formula=f"{{Order ID}} = {id}"
@@ -313,5 +302,32 @@ def total_net():
             break
         total_net+=product
     return round(total_net,2)
+
+def check_phone(phone):
+    formula = f"{{Phone}} = {phone}"
+    customer = customers_table.all(formula=formula)
+    if customer:
+        return True
+    else:
+        return False
+
+def fetch_customer_info(phone):
+    formula = f"{{Phone}} = {phone}"
+    customers = customers_table.all(formula=formula)
+    name = customers[0]["fields"].get("Name")
+    email = customers[0]["fields"].get("Email")
+    phone = phone
+    notes = customers[0]["fields"].get("Notes")
+    return name,phone,email,notes
+
+def fetch_product_info(sku):
+    formula = f'{{SKU}} = {sku}'
+    fetch_product=products_table.all(formula=formula)
+    title = fetch_product[0]["fields"].get("Title")
+    price = fetch_product[0]["fields"].get("Price")
+    return title,price
+
+
+
 
 
