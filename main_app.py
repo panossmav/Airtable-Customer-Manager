@@ -117,6 +117,9 @@ def create_order():
 
     tk.Button(new_window, text='Αναζήτηση πελάτη', command=sbt_find_cust).grid(row=0, column=2, sticky='w')
 
+def create_customer():
+    pass
+
 
 def home():
     clear_root()

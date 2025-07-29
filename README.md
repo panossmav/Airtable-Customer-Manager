@@ -22,12 +22,13 @@ git clone https://github.com/panossmav/Airtable-Customer-Manager.git
 		3. `SKU`: Autonumber
 		4. `Inventory`:Number(integer)
 	3. `Orders` with fields:
-		1. `Customer`: Single line text
+		1. `Customer`: Link from Customers
 		2. `Status`: Single line text
 		3. `Total Price`: Number (float, 2 decimal points)
 		4. `Customer Phone`: Number (integer, no decimal)
 		5. `Date / Time`: Single line text
 		6. `Order ID`: Autonumber
+		7. `Name`: Lookup (Source: Customers Field: Name)
 	4. `App users:` with fields:
 		1. `Username`: Single line text
 		2. `Password`: Single line text

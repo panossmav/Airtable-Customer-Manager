@@ -140,13 +140,13 @@ def new_order(phone,price,u):
     formula = f"{{Phone}} = {phone}"
     fetch_name=customers_table.all(formula=formula)
     if fetch_name:
-        name = fetch_name[0]["fields"].get("Name")
-        order=customers_table.create({
-            "Customer":name,
+        name = fetch_name[0]["id"]
+        order=orders_table.create({
+            "Customer":[name],
             "Status":'Fullfilled',
             "Total Price":price,
             "Customer Phone":phone,
-            "Date / Time":gr_time
+            "Date / Time":gr_time.isoformat()
         })
         ord_id = order["fields"].get("Order ID")
         create_user_logs(u,f"Create order {ord_id}")
