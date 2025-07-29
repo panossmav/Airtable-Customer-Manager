@@ -72,14 +72,15 @@ def new_customer(n,p,e,notes,user):
     if check_p_ex:
         return 'Υπάρχει ήδη πελάτης με αυτό το τηλέφωνο!'
     else:
-        customers_table.create({
+        new_cust=customers_table.create({
             "Name":n,
             "Notes":notes,
             "Phone":p,
             "Email":e
         })
-        create_user_logs(user,"Add customer (Phone: %d)"%p)
-        return 'Ο πελάτης καταχωρήθηκε!'
+        cust_id = new_cust["fields"].get("Customer ID")
+        create_user_logs(user,f"Add customer {cust_id}")
+        return f"Ο πελάτης {cust_id} καταχωρήθηκε!"
     
 def edit_customer(o_p,n,n_p,n_e,n_n,u):
     formula = f"{{Phone}} = {o_p}"

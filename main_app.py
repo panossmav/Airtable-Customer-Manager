@@ -118,7 +118,47 @@ def create_order():
     tk.Button(new_window, text='Αναζήτηση πελάτη', command=sbt_find_cust).grid(row=0, column=2, sticky='w')
 
 def create_customer():
-    pass
+    new_window=Toplevel(root)
+    new_window.title('CRMLite Online - Εγγραφή πελάτη')
+    new_window.geometry('500x500')
+
+    tk.Label(new_window,text='Τηλέφωνο').grid(column=0,sticky='e')
+    phone_e = Entry(new_window)
+    phone_e.grid(column=1,sticky='e')
+
+    tk.Label(new_window,text='Όνομα').grid(column=2,sticky='e')
+    name_e = Entry(new_window)
+    name_e.grid(column=3,sticky='e')
+
+    tk.Label(new_window,text='Email').grid(column=4,sticky='e')
+    email_e = Entry(new_window)
+    email_e.grid(column=5,sticky='e')
+
+    if isadmin == True:
+        tk.Label(new_window,text='Σημειώσεις').grid(column=6,sticky='e')
+        notes_e = Entry(new_window)
+        notes_e.grid(column=7,sticky='e')
+    
+    def sbt_create_customer():
+        phone = phone_e.get()
+        name = name_e.get()
+        email = email_e.get()
+        notes = notes_e.get()
+        if not notes:
+            notes = 'None'
+        if phone and email and name:
+            phone=int(phone)
+            find_cust = check_phone(phone)
+            if find_cust == True:
+                pu.showerror('CRMLite online','Υπάρχει πελάτης με αυτόν τον αριθμό!')
+            else:
+                act=new_customer(name,phone,email,notes,username)
+                pu.showinfo('CRMLite online',f"{act}")
+                new_window.destroy()
+        else:
+            pu.showerror('CRMLite Online','Παρακαλώ συμπληρώστε όνομα,email και τηλέφωνο!')        
+    tk.Button(new_window,text='Καταχώρηση',bg='green',fg='white',command=sbt_create_customer).grid(column=8,sticky='e')
+
 
 
 def home():
@@ -130,7 +170,7 @@ def home():
         tk.Label(root,text='Διαχειριστής. Όλες οι λειτουγίες διαθέσιμες',fg="green").grid(row=1,sticky='w')
     tk.Label(root,text=f"Τελευταία ενημέρωση: {now()}").grid(row=2,sticky="w")
     tk.Button(root,text='Νέα Παραγγελία',command=create_order).grid(column=3,sticky='e')
-
+    tk.Button(root,text='Καταχώρηση πελάτη',command=create_customer).grid(column=4,sticky='e')
 
 log_in()
 root.mainloop()
