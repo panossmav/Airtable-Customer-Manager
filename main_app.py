@@ -42,7 +42,7 @@ def create_order():
     new_window.title(" CRMLite Online Νέα Παραγγελία")
     new_window.geometry('500x500')
 
-    tk.Label(new_window, text='Αριθμός τηλεφώνου πελάτη:').grid(row=0, column=0, sticky='e')
+    tk.Label(new_window, text='Αριθμός τηλεφώνου πελάτη:').grid(row=0, column=0, sticky='ew')
     phone_e = Entry(new_window)
     phone_e.grid(row=0, column=1, sticky='w')
 
@@ -65,7 +65,7 @@ def create_order():
             name, phone, email, notes = fetch_customer_info(phone_int)
             tk.Label(new_window, text=f"Ο πελάτης βρέθηκε!\nΌνομα: {name}\nΤηλέφωνο: {phone}\nEmail: {email}\nΣημειώσεις: {notes}", justify='left').grid(row=0, column=0, columnspan=3, sticky='w', padx=10, pady=10)
 
-            tk.Label(new_window, text="Κωδικός προϊόντος (SKU):").grid(row=1, column=0, sticky='e')
+            tk.Label(new_window, text="Κωδικός προϊόντος (SKU):").grid(row=1, column=0, sticky='ew')
             sku_entry = Entry(new_window)
             sku_entry.grid(row=1, column=1, sticky='w')
 
@@ -124,25 +124,25 @@ def create_customer():
     new_window.geometry('500x500')
 
 
-    tk.Label(new_window,text='Καταχώρηση πελάτη',font=('Arial',20)).grid(column=0,sticky='e')
+    tk.Label(new_window,text='Καταχώρηση πελάτη',font=('Arial',20)).grid(column=0,sticky='ew')
 
 
-    tk.Label(new_window,text='Τηλέφωνο').grid(column=0,row=1,sticky='e')
+    tk.Label(new_window,text='Τηλέφωνο').grid(column=0,row=1,sticky='ew')
     phone_e = Entry(new_window)
-    phone_e.grid(row=2,sticky='e')
+    phone_e.grid(row=2,sticky='ew')
 
-    tk.Label(new_window,text='Όνομα').grid(row=3,sticky='e')
+    tk.Label(new_window,text='Όνομα').grid(row=3,sticky='ew')
     name_e = Entry(new_window)
-    name_e.grid(row=4,sticky='e')
+    name_e.grid(row=4,sticky='ew')
 
-    tk.Label(new_window,text='Email').grid(row=5,sticky='e')
+    tk.Label(new_window,text='Email').grid(row=5,sticky='ew')
     email_e = Entry(new_window)
-    email_e.grid(row=6,sticky='e')
+    email_e.grid(row=6,sticky='ew')
 
     if isadmin == True:
-        tk.Label(new_window,text='Σημειώσεις').grid(row=7,sticky='e')
+        tk.Label(new_window,text='Σημειώσεις').grid(row=7,sticky='ew')
         notes_e = Entry(new_window)
-        notes_e.grid(row=8,sticky='e')
+        notes_e.grid(row=8,sticky='ew')
     
     def sbt_create_customer():
         phone = phone_e.get()
@@ -162,7 +162,7 @@ def create_customer():
                 new_window.destroy()
         else:
             pu.showerror('CRMLite Online','Παρακαλώ συμπληρώστε όνομα,email και τηλέφωνο!')        
-    tk.Button(new_window,text='Καταχώρηση',bg='green',fg='white',command=sbt_create_customer).grid(row=9,sticky='e')
+    tk.Button(new_window,text='Καταχώρηση',bg='green',fg='white',command=sbt_create_customer).grid(row=9,sticky='ew')
 
 def create_product():
     if isadmin == True:
@@ -170,16 +170,16 @@ def create_product():
         new_window.title('CRMLite Online | Νέο προϊόν')
         new_window.geometry('600x600')
 
-        tk.Label(new_window,text='Νέο προϊόν',font=("Arial",20)).grid(row=0,sticky='e')
-        tk.Label(new_window,text='Λειτουργία διαχειρηστή',font=('Arial',16),fg='red').grid(row=1,sticky='e')
+        tk.Label(new_window,text='Νέο προϊόν',font=("Arial",20)).grid(row=0,sticky='ew')
+        tk.Label(new_window,text='Λειτουργία διαχειρηστή',font=('Arial',16),fg='red').grid(row=1,sticky='ew')
 
-        tk.Label(new_window,text='Όνομα προϊόντος').grid(row=2,sticky='e')
+        tk.Label(new_window,text='Όνομα προϊόντος').grid(row=2,sticky='ew')
         title_e = Entry(new_window)
-        title_e.grid(row=3,sticky='e')
+        title_e.grid(row=3,sticky='ew')
 
-        tk.Label(new_window,text='Τιμή').grid(row=4,sticky='e')
+        tk.Label(new_window,text='Τιμή').grid(row=4,sticky='ew')
         price_e = Entry(new_window)
-        price_e.grid(row=5,sticky='e')
+        price_e.grid(row=5,sticky='ew')
         def sbt_create_product():
             title = title_e.get()
             price = price_e.get()
@@ -196,7 +196,7 @@ def create_product():
                 title_e.delete(0,tk.END)
         
         
-        tk.Button(new_window,text='Καταχώρηση',bg='green',fg='white',command=sbt_create_product).grid(row=6,sticky='e')
+        tk.Button(new_window,text='Καταχώρηση',bg='green',fg='white',command=sbt_create_product).grid(row=6,sticky='ew')
     else:
         pu.showerror('CRMLite Online','Χρειάζεστε δικαιώματα διαχειρηστή για αυτήν την ενέργεια')
 
@@ -209,9 +209,9 @@ def home():
     else:
         tk.Label(root,text='Διαχειριστής. Όλες οι λειτουγίες διαθέσιμες',fg="green").grid(row=1,sticky='w')
     tk.Label(root,text=f"Τελευταία ενημέρωση: {now()}").grid(row=2,sticky="w")
-    tk.Button(root,text='Νέα Παραγγελία',command=create_order).grid(row=3,sticky='e')
-    tk.Button(root,text='Καταχώρηση πελάτη',command=create_customer).grid(row=4,sticky='e')
-    tk.Button(root,text='Καταχώρηση προϊόντος',command=create_product).grid(row=5,sticky='e')
+    tk.Button(root,text='Νέα Παραγγελία',command=create_order).grid(row=3,sticky='ew')
+    tk.Button(root,text='Καταχώρηση πελάτη',command=create_customer).grid(row=4,sticky='ew')
+    tk.Button(root,text='Καταχώρηση προϊόντος',command=create_product).grid(row=5,sticky='ew')
 
 
 log_in()
