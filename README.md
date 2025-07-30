@@ -11,17 +11,17 @@ pip install -r requirements.txt
 git clone https://github.com/panossmav/Airtable-Customer-Manager.git
 ```
 2. Create an Airtable database with the following Tables:
-	1. `Customers` **(Primary Field: Customer ID)**with fields:
+	1. `Customers` **(Primary Field: Customer ID)** with fields:
 		1. `Name`: Single line text
 		2. `Notes`: Single line text
 		3. `Phone`: Number (integer, no decimal)
 		4. `Email`: Single line text
-	2. `Products` **(Primary Field: SKU)**with fields:
+	2. `Products` **(Primary Field: SKU)** with fields:
 		1. `Title`: Single line text 
 		2. `Price`: Number (float, 2 decimal)
 		3. `SKU`: Autonumber
 		4. `Inventory`:Number(integer)
-	3. `Orders`**(Primary Field: Order ID)** with fields:
+	3. `Orders` **(Primary Field: Order ID)** with fields:
 		1. `Customer`: Link from Customers
 		2. `Status`: Single line text
 		3. `Total Price`: Number (float, 2 decimal points)
@@ -29,13 +29,13 @@ git clone https://github.com/panossmav/Airtable-Customer-Manager.git
 		5. `Date / Time`: Single line text
 		6. `Order ID`: Autonumber
 		7. `Name`: Lookup (Source: Customers Field: Name)
-	4. `App users:` **(Primary Field: User ID)**with fields:
+	4. `App users:` **(Primary Field: User ID)** with fields:
 		1. `Username`: Single line text
 		2. `Password`: Single line text
 		3. `User Type`: Single line text
 		4. `User ID`: Autonumber
 		**Note: you must save a user in the `App users` table, by encrypting the password with SHA256,and setting it as `admin` (case sensitive) ([Encrypt here](https://emn178.github.io/online-tools/sha256.html))**
-	5. `User logs:` **(Primary Field: Log ID)**with fields:
+	5. `User logs:` **(Primary Field: Log ID)** with fields:
 		1. `User`: Single line text
 		2. `Action`: Single line text
 		3. `Date / Time`: Single line text

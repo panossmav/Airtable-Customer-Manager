@@ -127,11 +127,10 @@ def c_check_notes(p):
     else:
         return 'ERROR'
 
-def new_product(t,p,u,s):
+def new_product(t,p,u):
     new_p=products_table.create({
         "Title":t,
-        "Price":p,
-        "Inventory":s
+        "Price":p
         })
     create_user_logs(u,"Create product.")
     sku = new_p["fields"].get("SKU")

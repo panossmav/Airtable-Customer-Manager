@@ -39,7 +39,8 @@ def log_in():
 
 def create_order():
     new_window = Toplevel(root)
-    new_window.title("Νέα Παραγγελία")
+    new_window.title(" CRMLite Online Νέα Παραγγελία")
+    new_window.geometry('500x500')
 
     tk.Label(new_window, text='Αριθμός τηλεφώνου πελάτη:').grid(row=0, column=0, sticky='e')
     phone_e = Entry(new_window)
@@ -163,6 +164,42 @@ def create_customer():
             pu.showerror('CRMLite Online','Παρακαλώ συμπληρώστε όνομα,email και τηλέφωνο!')        
     tk.Button(new_window,text='Καταχώρηση',bg='green',fg='white',command=sbt_create_customer).grid(row=9,sticky='e')
 
+def create_product():
+    if isadmin == True:
+        new_window=Toplevel(root)
+        new_window.title('CRMLite Online | Νέο προϊόν')
+        new_window.geometry('600x600')
+
+        tk.Label(new_window,text='Νέο προϊόν',font=("Arial",20)).grid(row=0,sticky='e')
+        tk.Label(new_window,text='Λειτουργία διαχειρηστή',font=('Arial',16),fg='red').grid(row=1,sticky='e')
+
+        tk.Label(new_window,text='Όνομα προϊόντος').grid(row=2,sticky='e')
+        title_e = Entry(new_window)
+        title_e.grid(row=3,sticky='e')
+
+        tk.Label(new_window,text='Τιμή').grid(row=4,sticky='e')
+        price_e = Entry(new_window)
+        price_e.grid(row=5,sticky='e')
+        def sbt_create_product():
+            title = title_e.get()
+            price = price_e.get()
+            try:
+                price = float(price)
+                if price<0 or not title:
+                    raise ValueError
+                res=new_product(title,price,username)
+                pu.showinfo('CRMLite Online',f"{res}")
+                new_window.destroy()
+            except ValueError:
+                pu.showerror('CRMLite','Σφάλμα εισόδου! Εισάγετε τίτλο και τιμή')
+                price_e.delete(0,tk.END)
+                title_e.delete(0,tk.END)
+        
+        
+        tk.Button(new_window,text='Καταχώρηση',bg='green',fg='white',command=sbt_create_product).grid(row=6,sticky='e')
+    else:
+        pu.showerror('CRMLite Online','Χρειάζεστε δικαιώματα διαχειρηστή για αυτήν την ενέργεια')
+
 
 def home():
     clear_root()
@@ -174,6 +211,8 @@ def home():
     tk.Label(root,text=f"Τελευταία ενημέρωση: {now()}").grid(row=2,sticky="w")
     tk.Button(root,text='Νέα Παραγγελία',command=create_order).grid(row=3,sticky='e')
     tk.Button(root,text='Καταχώρηση πελάτη',command=create_customer).grid(row=4,sticky='e')
+    tk.Button(root,text='Καταχώρηση προϊόντος',command=create_product).grid(row=5,sticky='e')
+
 
 log_in()
 root.mainloop()
