@@ -3,6 +3,7 @@ import tkinter as tk
 from tkinter import messagebox as pu
 import datetime as dt
 from funcs import *
+from tkinter import ttk
 
 
 root = tk.Tk()
@@ -201,6 +202,45 @@ def create_product():
         pu.showerror('CRMLite Online','Χρειάζεστε δικαιώματα διαχειρηστή για αυτήν την ενέργεια')
 
 
+def change_order_status():
+    options = ['Fulfilled','Refunded','Pending','Unknown']
+    new_window=Toplevel(root)
+    new_window.geometry('500x500')
+    new_window.title('CRMLite online')
+    
+    tk.Label(new_window,text='Αναζήτηση παραγγελίας',font=('Arial',18)).grid(row=0,sticky='e')
+    ord_id_e = Entry(new_window)
+    ord_id_e.grid(row=1,sticky='e')
+
+    def sbt_order_search():
+        ord_id=ord_id_e.get()
+        try:
+            ord_id=int(ord_id)
+            res,res_msg = check_orders(ord_id)
+            if res == True:
+                for widgets in new_window.winfo_children():
+                    widgets.destroy()
+                tk.Label(new_window,text=f"{res_msg}").grid(row=0,sticky='e')
+                tk.Label(new_window,text='Αλλαγή κατάστασης σε:\n').grid(row=1,sticky='e')
+                new_status_cb = ttk.Combobox(new_window,values=options,state="readonly")
+                new_status_cb.grid(row=2,sticky='e')
+                new_status_cb.current(0)
+                def sbt_update_order():
+                    new_status = new_status_cb.get()
+                    res_msg_2 = modify_status(ord_id,new_status,username)
+                    pu.showinfo('CRMLite Online',f"{res_msg_2}")
+                    new_window.destroy()
+                tk.Button(new_window,text='Αλλαγή',command=sbt_update_order).grid(row=3,sticky='e')
+
+            else:
+                pu.showerror('CRMLite Online','Δεν βρέθηκε παραγγελία με αυτόν τον αριθμό')
+        except ValueError:
+            pu.showerror('CRMLite Online','Σφάλμα! Ο κωδικός πρέπει να είναι αριθμός')
+            ord_id.delete(0,tk.END)
+    tk.Button(new_window,text='Αναζήτηση',command=sbt_order_search).grid(row=2,sticky='e')
+
+
+
 def home():
     clear_root()
     tk.Label(root,text=f"Όνομα χρήστη: {username}").grid(row=0,sticky='w')
@@ -212,7 +252,7 @@ def home():
     tk.Button(root,text='Νέα Παραγγελία',command=create_order).grid(row=3,sticky='ew')
     tk.Button(root,text='Καταχώρηση πελάτη',command=create_customer).grid(row=4,sticky='ew')
     tk.Button(root,text='Καταχώρηση προϊόντος',command=create_product).grid(row=5,sticky='ew')
-
+    tk.Button(root,text='Αλλαγή κατάστασης παραγγελίας',command=change_order_status).grid(row=6,sticky='ew')
 
 log_in()
 root.mainloop()

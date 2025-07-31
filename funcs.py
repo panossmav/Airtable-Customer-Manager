@@ -160,11 +160,13 @@ def check_orders(id):
     formula=f"{{Order ID}} = {id}"
     res = orders_table.all(formula=formula)
     if res:
-        cust = res[0]["fields"].get("Customer")
+        cust_db = res[0]["fields"].get("Customer")
+        cust_fetch_db=customers_table.get(cust_db[0])
+        cust = cust_fetch_db["fields"].get("Name")
         stat = res[0]["fields"].get("Status")
-        item = res[0]["fields"].get("Item")
+        item = res[0]["fields"].get("Total Price")
         date = res[0]["fields"].get("Date / Time")
-        return True,f'Αρ. Παραγγελίας: {id} \n Όνομα: {cust} \n Κατάσταση {stat} \n Προϊόν {item} \n Ημερομηνία: {date}'
+        return True,f'Αρ. Παραγγελίας: {id} \n Όνομα: {cust} \n Κατάσταση {stat} \n Ποσό {item}€ \n Ημερομηνία: {date}'
     else:
         return False,'Δεν βρέθηκε η παραγγελία'
 
@@ -176,8 +178,8 @@ def modify_status(id,n,u):
         orders_table.update(r_id,{
             "Status":n
         })
-        create_user_logs(u,f'Change order {id} status to {n}')
-        return 'Η κατάσταση παραγγελίας άλλαξε'
+        create_user_logs(u,f"Change order {id} status to {n}")
+        return f"Η κατάσταση παραγγελίας {id} άλλαξε σε {n}"
     else:
         return 'Δεν βρέθηκε η παραγγελία'
 
