@@ -222,7 +222,7 @@ def new_user(o_u,n_u,pwd,u_t):
     formula = f"{{Username}} = '{n_u}'"
     us_check = users_table.all(formula=formula)
     if us_check:
-        return 'Υπάρχει ήδη χρήστης με αυτό το όνομα'
+        return False,'Υπάρχει ήδη χρήστης με αυτό το όνομα'
     else:
         users_table.create({
             "Username":n_u,
@@ -230,7 +230,7 @@ def new_user(o_u,n_u,pwd,u_t):
             "User Type":u_t
         })
         create_user_logs(o_u,f"Create {n_u} as {u_t}")
-        return 'Ο χρήσητης αποθηκεύτηκε και μπορεί να συνδεθεί'
+        return True,'Ο χρήσητης αποθηκεύτηκε και μπορεί να συνδεθεί'
     
 def del_user(c_u,d_u):
     formula = f"{{Username}} = '{d_u}'"

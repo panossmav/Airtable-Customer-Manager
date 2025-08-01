@@ -239,7 +239,58 @@ def change_order_status():
             ord_id.delete(0,tk.END)
     tk.Button(new_window,text='Αναζήτηση',command=sbt_order_search).grid(row=2,sticky='e')
 
+def create_user():
+    if isadmin == True:
+        new = Toplevel(root)
+        new.title('CRMLite Online | Προσθήκη χρήστη')
+        new.geometry('500x500')
+        
+        tk.Label(new,text='Εγγραφή χρήστη',font=('Arial',18)).grid(row=0,sticky='ew')
 
+        tk.Label(new,text='Username νέου χρήστη').grid(row=1,sticky='ew')
+        user_e = Entry(new)
+        user_e.grid(row=2,sticky='ew')
+
+        tk.Label(new,text='Password νέου χρήστη').grid(row=3,sticky='ew')
+        passw1_e = Entry(new,show='•')
+        passw1_e.grid(row=4,sticky='ew')
+
+        tk.Label(new,text='Επανάληψη Password').grid(row=5,sticky='ew')
+        passw2_e = Entry(new,show='•')
+        passw2_e.grid(row=6,sticky='ew')
+
+        user_types = ['Απλός χρήστης','Διαχειριστής']
+        user_type_s = ttk.Combobox(new,values=user_types,state="readonly")
+        user_type_s.grid(row=7,sticky='ew')
+        user_type_s.current(0)
+
+        def sbt_user_create():
+            passw_1 = passw1_e.get()
+            passw_2 = passw2_e.get()
+            user_new=user_e.get()
+            user_type = user_type_s.get()
+            if user_type == 'Διαχειριστής':
+                user_type = 'admin'
+            else:
+                user_type = 'user'
+            if passw_1 == passw_2:
+                passw = passw_1
+                free_user,res_msg = new_user(username,user_new,passw,user_type)
+                if free_user == True:
+                    pu.showinfo('CRMLite online',f"{res_msg}")
+                    new.destroy()
+                else:
+                    pu.showerror('CRMLite Online',f"{res_msg}")
+                    user_e.delete(0,tk.END)
+                    passw1_e.delete(0,tk.END)
+                    passw2_e.delete(0,tk.END)
+            else:
+                pu.showerror('CRMLite','Οι κωδικοί δεν είναι ίδιοι! Δοκιμάστε ξανά')
+                passw1_e.delete(0,tk.END)
+                passw2_e.delete(0,tk.END)
+        tk.Button(new,text='Προσθήκη',command=sbt_user_create,fg="white",bg="green").grid(row=8,sticky='ew')
+    else:
+        pu.showerror('CRMLite Online','Δεν έχετε δικαιώματα για αυτήν την ενέργεια')
 
 def home():
     clear_root()
@@ -253,6 +304,8 @@ def home():
     tk.Button(root,text='Καταχώρηση πελάτη',command=create_customer).grid(row=4,sticky='ew')
     tk.Button(root,text='Καταχώρηση προϊόντος',command=create_product).grid(row=5,sticky='ew')
     tk.Button(root,text='Αλλαγή κατάστασης παραγγελίας',command=change_order_status).grid(row=6,sticky='ew')
+    tk.Button(root,text='Προσθήκη χρήστη εφαρμογής',command=create_user).grid(row=6,sticky='ew')
+
 
 log_in()
 root.mainloop()
