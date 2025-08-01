@@ -291,18 +291,17 @@ def total_cust():
     return count
 
 def total_net():
-    check_orders=orders_table.all(fields=["Product SKU"])
-    total_net=0.0
-    for order in check_orders:
-        item = order["fields"].get("Product SKU")
-        formula=f"{{SKU}} = {item}"
-        if not formula:
-            break
-        products = products_table.all(formula=formula,fields=["Price"])
-        product = float(products[0]["fields"].get("Price"))
-        if not product:
-            break
-        total_net+=product
+    all_orders = orders_table.all()
+    total_net = 0.0
+    for order in all_orders:
+        price = order["fields"].get("Total Price")
+        if price == None:
+            price = 0.0
+        try:
+            price = float(price)
+        except ValueError:
+            price = 0.0
+        total_net+=price
     return round(total_net,2)
 
 def check_phone(phone):

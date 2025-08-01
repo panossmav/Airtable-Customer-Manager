@@ -335,7 +335,7 @@ def change_user_type():
                 username_e.delete(0,tk.END)
         tk.Button(new_window,text='Αναζήτηση χρήστη',command=locate_user).grid(row=2,sticky='ew')
     else:
-        pu.showerror('CRMLite','Δεν έχετε δικαίωμα πρόσβηασης')
+        pu.showerror('CRMLite','Δεν έχετε δικαίωμα πρόσβασης')
 
 
 
@@ -346,7 +346,9 @@ def home():
     if isadmin == False:
         tk.Label(root,text='Απλός χρήστης. Περιορισμένη λειτουργία',fg="red").grid(row=1,sticky='w')
     else:
-        tk.Label(root,text='Διαχειριστής. Όλες οι λειτουγίες διαθέσιμες',fg="green").grid(row=1,sticky='w')
+        tk.Label(root,text='Διαχειριστής. Όλες οι λειτουγίες διαθέσιμες',fg="green").grid(row=1,column=0)
+        tk.Label(root,text=f"Συνολικοί πελάτες: {total_cust()}").grid(row=1,column=1)
+        tk.Label(root,text=f"Συνολικός τζίρος: {total_net()}").grid(row=1,column=2)
     tk.Label(root,text=f"Τελευταία ενημέρωση: {now()}").grid(row=2,sticky="w")
     tk.Button(root,text='Νέα Παραγγελία',command=create_order).grid(row=3,sticky='ew')
     tk.Button(root,text='Καταχώρηση πελάτη',command=create_customer).grid(row=4,sticky='ew')
