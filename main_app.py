@@ -12,10 +12,11 @@ root.geometry('550x550')
 
 def clear_root():
     for widget in root.winfo_children():
-        widget.pack_forget()
+        widget.destroy()
 
 
 def log_in():
+    clear_root()
     tk.Label(root,text='Καλοσωρίσατε!',font=("Arial",18),justify="center").pack()
     tk.Label(root,text='Username: ',font=("Arial",14)).pack()
     user_e=tk.Entry(root)
@@ -292,9 +293,56 @@ def create_user():
     else:
         pu.showerror('CRMLite Online','Δεν έχετε δικαιώματα για αυτήν την ενέργεια')
 
+
+
+
+def change_user_type():
+    if isadmin == True:
+        new_window = Toplevel(root)
+        new_window.title('CRMLite Online | Προσθήκη πελάτη')
+        new_window.geometry('500x500')
+
+        tk.Label(new_window,text='Username προς αλλαγή:').grid(row=0,sticky='ew')
+        username_e = Entry(new_window)
+        username_e.grid(row=1,sticky='ew')
+        def locate_user():
+            user_m = username_e.get()
+            search_status,user_type = search_user(user_m)
+            if search_status == True:
+                for widget in new_window.winfo_children():
+                    widget.destroy()
+                tk.Label(new_window,text=f"Χρηστης: {user_m}").grid(row=0,sticky='ew')
+                tk.Label(new_window,text='Αλλαγή σε:').grid(row=1,sticky='ew')
+                user_types=['Απλός χρήστης','Διαχειριστής']
+                user_type_cb = ttk.Combobox(new_window,values=user_types,state='readonly')
+                user_type_cb.grid(row=2,sticky='ew')
+                if user_type == 'admin':
+                    user_type_cb.current(1)
+                else:
+                    user_type_cb.current(0)
+                def sbt_update():
+                    new_user_type = user_type_cb.get()
+                    if new_user_type == 'Διαχειριστής':
+                        new_user_type = 'admin'
+                    else:
+                        new_user_type = 'user'
+                    res = modfiy_user_type(username,user_m,new_user_type)
+                    pu.showinfo('CRMLite Online',f"{res}")
+                    new_window.destroy()
+                tk.Button(new_window,text='Επεξεργασία',command=sbt_update).grid(row=3,sticky='ew')
+            else:        
+                pu.showerror('CRMLite','Δεν βρέθηκε χρήστης με αυτό το όνομα!')
+                username_e.delete(0,tk.END)
+        tk.Button(new_window,text='Αναζήτηση χρήστη',command=locate_user).grid(row=2,sticky='ew')
+    else:
+        pu.showerror('CRMLite','Δεν έχετε δικαίωμα πρόσβηασης')
+
+
+
 def home():
     clear_root()
-    tk.Label(root,text=f"Όνομα χρήστη: {username}").grid(row=0,sticky='w')
+    tk.Label(root,text=f"Όνομα χρήστη: {username}").grid(row=0,column=0)
+    tk.Button(root,text=f"Αποσύνδεση",command=log_in).grid(row=0,column=1)
     if isadmin == False:
         tk.Label(root,text='Απλός χρήστης. Περιορισμένη λειτουργία',fg="red").grid(row=1,sticky='w')
     else:
@@ -305,7 +353,7 @@ def home():
     tk.Button(root,text='Καταχώρηση προϊόντος',command=create_product).grid(row=5,sticky='ew')
     tk.Button(root,text='Αλλαγή κατάστασης παραγγελίας',command=change_order_status).grid(row=6,sticky='ew')
     tk.Button(root,text='Προσθήκη χρήστη εφαρμογής',command=create_user).grid(row=6,sticky='ew')
-
+    tk.Button(root,text='Αλλαγή τύπου χρήστη',command=change_user_type).grid(row=7,sticky='ew')
 
 log_in()
 root.mainloop()

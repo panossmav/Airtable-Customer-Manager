@@ -330,6 +330,26 @@ def fetch_product_info(sku):
     return title,price
 
 
+def search_user(u):
+    formula=f"{{Username}} = '{u}'"
+    fetch_users = users_table.all(formula=formula)
+    if fetch_users:
+        type = fetch_users[0]["fields"].get("User Type")
+        return True,type
+    else:
+        return False,'null'
 
+def modfiy_user_type(c_u,m_u,status):
+    formula = f"{{Username}} = '{m_u}'"
+    fetch_users = users_table.all(formula=formula)
+    if fetch_users:
+        user_id = fetch_users[0]["id"]
+        customers_table.update(user_id,{
+            "User Type":status
+        })
+        create_user_logs(c_u,f"Update {m_u} to {status}")
+        return f"Ο χρήστης {m_u} 'αλλαξε σε {status}"
+    else:
+        return 'Error'    
 
 
