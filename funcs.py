@@ -51,7 +51,7 @@ def create_user_logs(u,act):
     logs_table.create(
         {"User":u,
         "Action":act,
-        "Date / Time":datetime.now()}
+        "Date / Time":now()}
         )
 
 def now():
