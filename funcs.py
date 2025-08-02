@@ -51,7 +51,8 @@ def create_user_logs(u,act):
     logs_table.create(
         {"User":u,
         "Action":act,
-        "Date / Time":gr_time.isoformat(sep=' ', timespec='seconds')})
+        "Date / Time":datetime.now()}
+        )
 
 def now():
     return gr_time.isoformat(sep=' ', timespec='seconds')
