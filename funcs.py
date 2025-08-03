@@ -95,9 +95,9 @@ def edit_customer(o_p,n,n_p,n_e,n_n,u):
             "Notes":n_n
         })
         create_user_logs(u,"Edit customer %d"%o_p)
-        return 'Η επεξέργασια πελάτη καταχωρήθηκε'
+        return True,'Η επεξέργασια πελάτη καταχωρήθηκε'
     else:
-        return 'Δεν υπάρχει πελάτης με αυτόν τον αριθμό. Δοκίμαστε ξάνα'
+        return False,'Δεν υπάρχει πελάτης με αυτόν τον αριθμό. Δοκίμαστε ξάνα'
 
 
 def c_check_name(p):

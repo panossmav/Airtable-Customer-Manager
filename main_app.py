@@ -337,7 +337,65 @@ def change_user_type():
     else:
         pu.showerror('CRMLite','Δεν έχετε δικαίωμα πρόσβασης')
 
+def modify_cust_info():
+    new_window = Toplevel(root)
+    new_window.title('CRMLite | Επεξεργασία Πελάτη')
+    new_window.geometry('500x500')
 
+    tk.Label(new_window,text='Αριθμός τηλεφώνου').grid(row=0,sticky='ew')
+    old_phone_e = Entry(new_window)
+    old_phone_e.grid(row=1,sticky='ew')
+    def search_customer():
+        old_phone = old_phone_e.get()
+        try:
+            old_phone = int(old_phone)
+            res = check_phone(old_phone)
+            if res == True:
+                for widget in new_window.winfo_children():
+                    widget.destroy()
+                c_name,c_email,c_phone,c_notes=fetch_customer_info(old_phone)
+                tk.Label(new_window,text='Όνομα: ').grid(row=0,column=0)
+                name_entry = Entry(new_window)
+                name_entry.grid(row=0,column=1)
+                name_entry.insert(0,c_name)
+
+                tk.Label(new_window,text='Email: ').grid(row=1,column=0)
+                email_entry = Entry(new_window)
+                email_entry.grid(row=1,column=1)
+                email_entry.insert(0,c_email)
+
+                tk.Label(new_window,text='Κινητό:').grid(row=2,column=0)
+                phone_entry = Entry(new_window)
+                phone_entry.grid(row=2,column=1)
+                phone_entry.insert(0,c_phone)
+
+                tk.Label(new_window,text='Σημειώσεις:').grid(row=3,column=0)
+                notes_entry = Entry(new_window)
+                notes_entry.grid(row=3,column=1)
+                notes_entry.insert(0,c_notes)
+
+                def sbt_edit():
+                    name = name_entry.get()
+                    email = email_entry.get()
+                    phone = phone_entry.get()
+                    notes = notes_entry.get()
+                    try:
+                        phone = int(phone)
+                        taken = check_phone(phone)
+                        if taken == True:
+                            raise ValueError
+                        result,res_msg = edit_customer(old_phone,name,phone,email,notes,username)
+                        if result == True:
+                            pu.showinfo('CRMLite Online',f"{res_msg}")
+                        else:
+                            pu.showerror('CRMLite Online',f"{res_msg}")
+                    except ValueError:
+                        pu.showerror('CRMLite online','Εισάγετε έναν έγκυρο αριθμό!')
+                tk.Button(new_window,text='Επεξεργασία',command=sbt_edit).grid(row=4)
+        except ValueError:
+            pu.showerror('CRMLite','Παρακαλώ εισάγετε έγκυρο αριθμό')
+    tk.Button(new_window,text=f"Αναζήτηση πελάτη",command=search_customer).grid(row=2,sticky='ew')
+        
 
 def home():
     clear_root()
@@ -356,6 +414,8 @@ def home():
     tk.Button(root,text='Αλλαγή κατάστασης παραγγελίας',command=change_order_status).grid(row=6,sticky='ew')
     tk.Button(root,text='Προσθήκη χρήστη εφαρμογής',command=create_user).grid(row=6,sticky='ew')
     tk.Button(root,text='Αλλαγή τύπου χρήστη',command=change_user_type).grid(row=7,sticky='ew')
+    tk.Button(root,text='Επεξεργασία πελάτη',command=modify_cust_info).grid(row=8,sticky='ew')
+    
 
 log_in()
 root.mainloop()
