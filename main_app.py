@@ -380,11 +380,11 @@ def modify_cust_info():
                     phone = phone_entry.get()
                     notes = notes_entry.get()
                     try:
-                        phone = int(phone)
+                        phone_e = int(phone)
                         taken = check_phone(phone)
                         if taken == True:
                             raise ValueError
-                        result,res_msg = edit_customer(old_phone,name,phone,email,notes,username)
+                        result,res_msg = edit_customer(old_phone,name,phone_e,email,notes,username)
                         if result == True:
                             pu.showinfo('CRMLite Online',f"{res_msg}")
                         else:
@@ -414,7 +414,8 @@ def home():
     tk.Button(root,text='Αλλαγή κατάστασης παραγγελίας',command=change_order_status).grid(row=6,sticky='ew')
     tk.Button(root,text='Προσθήκη χρήστη εφαρμογής',command=create_user).grid(row=6,sticky='ew')
     tk.Button(root,text='Αλλαγή τύπου χρήστη',command=change_user_type).grid(row=7,sticky='ew')
-    tk.Button(root,text='Επεξεργασία πελάτη',command=modify_cust_info).grid(row=8,sticky='ew')
+    #Επεξεργασία πελατόν κρυφή μέχρι να γινει resolve το issue #5 (grid(row=8,sticky='ew'))
+    tk.Button(root,text='Επεξεργασία πελάτη',command=modify_cust_info)
     
 
 log_in()
