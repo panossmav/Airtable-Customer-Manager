@@ -353,7 +353,7 @@ def modify_cust_info():
             if res == True:
                 for widget in new_window.winfo_children():
                     widget.destroy()
-                c_name,c_email,c_phone,c_notes=fetch_customer_info(old_phone)
+                c_name,c_phone,c_email,c_notes=fetch_customer_info(old_phone)
                 tk.Label(new_window,text='Όνομα: ').grid(row=0,column=0)
                 name_entry = Entry(new_window)
                 name_entry.grid(row=0,column=1)
@@ -380,11 +380,15 @@ def modify_cust_info():
                     phone = phone_entry.get()
                     notes = notes_entry.get()
                     try:
-                        phone_e = int(phone)
+                        phone = int(phone)
                         taken = check_phone(phone)
                         if taken == True:
-                            raise ValueError
-                        result,res_msg = edit_customer(old_phone,name,phone_e,email,notes,username)
+                            if int(phone) == int(old_phone):
+                                pass
+                            else:
+                                raise ValueError
+                        
+                        result,res_msg = edit_customer(old_phone,name,phone,email,notes,username)
                         if result == True:
                             pu.showinfo('CRMLite Online',f"{res_msg}")
                         else:
@@ -395,7 +399,8 @@ def modify_cust_info():
         except ValueError:
             pu.showerror('CRMLite','Παρακαλώ εισάγετε έγκυρο αριθμό')
     tk.Button(new_window,text=f"Αναζήτηση πελάτη",command=search_customer).grid(row=2,sticky='ew')
-        
+
+    
 
 def home():
     clear_root()
@@ -414,8 +419,8 @@ def home():
     tk.Button(root,text='Αλλαγή κατάστασης παραγγελίας',command=change_order_status).grid(row=6,sticky='ew')
     tk.Button(root,text='Προσθήκη χρήστη εφαρμογής',command=create_user).grid(row=6,sticky='ew')
     tk.Button(root,text='Αλλαγή τύπου χρήστη',command=change_user_type).grid(row=7,sticky='ew')
-    #Επεξεργασία πελατόν κρυφή μέχρι να γινει resolve το issue #5 (grid(row=8,sticky='ew'))
-    tk.Button(root,text='Επεξεργασία πελάτη',command=modify_cust_info)
+    #Επεξεργασία πελατόν κρυφή μέχρι να γινει resolve το issue #5 
+    tk.Button(root,text='Επεξεργασία πελάτη',command=modify_cust_info).grid(row=8,sticky='ew')
     
 
 log_in()
