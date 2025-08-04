@@ -400,7 +400,36 @@ def modify_cust_info():
             pu.showerror('CRMLite','Παρακαλώ εισάγετε έγκυρο αριθμό')
     tk.Button(new_window,text=f"Αναζήτηση πελάτη",command=search_customer).grid(row=2,sticky='ew')
 
-    
+def delete_cust():
+    if isadmin == True:
+        new = Toplevel(root)
+        new.title('CRMLite | Διαγραφή πελάτη')
+        new.geometry('500x500')
+
+        tk.Label(new,text='Δώσε τηλέφωνο').grid(row=0,sticky='ew')
+        phone_entry = Entry(new)
+        phone_entry.grid(row=1,sticky='ew')
+
+        def sbt_search():
+            phone = phone_entry.get()
+            try:
+                phone = int(phone)
+                res = check_phone(phone)
+                if res == True:
+                    ver = pu.askyesnocancel('CRMLite','Ο πελάτης βρέθηκε. Θέλετε να διαγραφεί;')
+                    if ver==True:
+                        f_res=del_cust(username,phone)
+                        pu.showinfo('CRMLite',f"{f_res}")
+                else:
+                    pu.showerror('CRMLite','Δεν βρέθηκε πελάτης με αυτόν τον αριθμό τηλεφώνου')
+                new.destroy()
+            except ValueError:
+                pu.showerror('CRMLite','Εισάγετε έναν ακαίρεο αριθμό')
+        tk.Button(new,text='Διαγραφή',command=sbt_search).grid(row=2,sticky='ew')
+    else:
+        pu.showerror('CRMLite','Δεν έχετε δικαιώματα διαχειρηστή!')
+
+
 
 def home():
     clear_root()
@@ -419,8 +448,9 @@ def home():
     tk.Button(root,text='Αλλαγή κατάστασης παραγγελίας',command=change_order_status).grid(row=6,sticky='ew')
     tk.Button(root,text='Προσθήκη χρήστη εφαρμογής',command=create_user).grid(row=6,sticky='ew')
     tk.Button(root,text='Αλλαγή τύπου χρήστη',command=change_user_type).grid(row=7,sticky='ew')
-    #Επεξεργασία πελατόν κρυφή μέχρι να γινει resolve το issue #5 
     tk.Button(root,text='Επεξεργασία πελάτη',command=modify_cust_info).grid(row=8,sticky='ew')
+    tk.Button(root,text='Διαγραφή πελάτη',command=delete_cust).grid(row=9,sticky='ew')
+    
     
 
 log_in()
